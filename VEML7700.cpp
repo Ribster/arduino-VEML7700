@@ -63,7 +63,11 @@ receiveData(uint8_t command, uint16_t& data)
   if (Wire.write(command) != 1){
     return STATUS_ERROR;
   }
+#ifdef ARDUINO_ARCH_ESP32
+  if (Wire.endTransmission(false) !=7 ){  // NB: don't send stop here
+#else
   if (Wire.endTransmission(false)){  // NB: don't send stop here
+#endif
     return STATUS_ERROR;
   }
   if (Wire.requestFrom(uint8_t(I2C_ADDRESS), uint8_t(2)) != 2){
